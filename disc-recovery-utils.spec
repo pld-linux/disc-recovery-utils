@@ -6,6 +6,7 @@ Release:	1
 License:	GPL
 Group:		Applications/System
 Source0:	ftp://ftp.atnf.csiro.au/pub/people/rgooch/linux/%{name}-%{version}.tgz
+# Source0-md5:	be974ef7989776755764da70e63354fe
 BuildRequires:	e2fsprogs-devel >= 1.07
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
