@@ -33,13 +33,11 @@ install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8}
 install copy_blocks copy_listed_blocks e2fsfind $RPM_BUILD_ROOT%{_sbindir}
 install *.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
-gzip -9nf README
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc *.gz
+%doc README
 %attr(755,root,root) %{_sbindir}/*
 %{_mandir}/*/*
