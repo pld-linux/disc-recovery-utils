@@ -1,4 +1,5 @@
 Summary:	Disc recovery tools for EXT2FS
+Summary(pl):	Narzêdzia ratunkowe do ext2fs
 Name:		disc-recovery-utils
 Version:	1.1
 Release:	1
@@ -16,6 +17,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 A few disc recovery tools (copy_blocks and copy_listed_blocks) and an
 inode recovery tool for the EXT2 filesystem (e2fsfind).
 
+%description -l pl
+Kilka narzêdzi ratunkowych (copy_blocks i copy_listed_blocks) oraz
+narzêdzie do odzyskiwania inodów z systemu plików ext2 (e2fsfind).
+
 %prep
 %setup -q -n %{name}
 
@@ -25,10 +30,10 @@ sed 's/cc/$(CC) $(CFLAGS) $(LDFLAGS)/'< Makefile >GNUmakefile
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__install} -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8}
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{_mandir}/man8}
 
-%{__install} copy_blocks copy_listed_blocks e2fsfind $RPM_BUILD_ROOT%{_sbindir}
-%{__install} *.8 $RPM_BUILD_ROOT%{_mandir}/man8
+install copy_blocks copy_listed_blocks e2fsfind $RPM_BUILD_ROOT%{_sbindir}
+install *.8 $RPM_BUILD_ROOT%{_mandir}/man8
 
 gzip -9nf README
 
