@@ -1,5 +1,5 @@
 Summary:	Disc recovery tools for EXT2FS
-Summary(pl):	Narzêdzia ratunkowe do ext2fs
+Summary(pl.UTF-8):   NarzÄ™dzia ratunkowe do ext2fs
 Name:		disc-recovery-utils
 Version:	1.1
 Release:	2
@@ -16,9 +16,9 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 A few disc recovery tools (copy_blocks and copy_listed_blocks) and an
 inode recovery tool for the EXT2 filesystem (e2fsfind).
 
-%description -l pl
-Kilka narzêdzi ratunkowych (copy_blocks i copy_listed_blocks) oraz
-narzêdzie do odzyskiwania inodów z systemu plików ext2 (e2fsfind).
+%description -l pl.UTF-8
+Kilka narzÄ™dzi ratunkowych (copy_blocks i copy_listed_blocks) oraz
+narzÄ™dzie do odzyskiwania inodÃ³w z systemu plikÃ³w ext2 (e2fsfind).
 
 %prep
 %setup -q -n %{name}
