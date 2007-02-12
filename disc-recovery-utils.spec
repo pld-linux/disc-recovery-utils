@@ -1,5 +1,5 @@
 Summary:	Disc recovery tools for EXT2FS
-Summary(pl.UTF-8):   Narzędzia ratunkowe do ext2fs
+Summary(pl.UTF-8):	Narzędzia ratunkowe do ext2fs
 Name:		disc-recovery-utils
 Version:	1.1
 Release:	2
