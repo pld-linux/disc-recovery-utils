@@ -1,0 +1,10 @@
+--- disc-recovery-utils/e2fsfind.c.orig	2009-08-28 13:47:02.000000000 +0200
++++ disc-recovery-utils/e2fsfind.c	2009-08-28 13:47:21.000000000 +0200
+@@ -47,6 +47,7 @@
+ #include <sys/times.h>
+ #include <errno.h>
+ #include <utime.h>
++#include <linux/fs.h>
+ #include <linux/ext2_fs.h>
+ #include "ext2fs/ext2fs.h"
+ #include "version.h"
