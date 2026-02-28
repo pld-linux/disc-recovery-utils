@@ -2,7 +2,7 @@ Summary:	Disc recovery tools for EXT2FS
 Summary(pl.UTF-8):	Narzędzia ratunkowe do ext2fs
 Name:		disc-recovery-utils
 Version:	1.1
-Release:	3
+Release:	4
 License:	GPL
 Group:		Applications/System
 Source0:	ftp://ftp.atnf.csiro.au/pub/people/rgooch/linux/%{name}-%{version}.tgz
