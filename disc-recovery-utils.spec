@@ -2,12 +2,13 @@ Summary:	Disc recovery tools for EXT2FS
 Summary(pl.UTF-8):	Narzędzia ratunkowe do ext2fs
 Name:		disc-recovery-utils
 Version:	1.1
-Release:	4
+Release:	5
 License:	GPL
 Group:		Applications/System
 Source0:	ftp://ftp.atnf.csiro.au/pub/people/rgooch/linux/%{name}-%{version}.tgz
 # Source0-md5:	be974ef7989776755764da70e63354fe
-Patch0:		%{name}-linux_fs.patch
+Patch0:		%{name}-modern-headers.patch
+Patch1:		%{name}-makefile.patch
 BuildRequires:	e2fsprogs-devel >= 1.07
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -24,10 +25,15 @@ narzędzie do odzyskiwania inodów z systemu plików ext2 (e2fsfind).
 %prep
 %setup -q -n %{name}
 %patch -P0 -p1
+%patch -P1 -p1
 
 %build
-sed 's/cc/$(CC) $(CFLAGS) $(LDFLAGS)/'< Makefile >GNUmakefile
-%{__make} CFLAGS="%{rpmcflags}" LDFLAGS="%{rpmldflags}" E2FSROOT=$RPM_BUILD_ROOT
+%{__make} \
+	CC="%{__cc}" \
+	CPPFLAGS="%{rpmcppflags}" \
+	CFLAGS="%{rpmcflags}" \
+	LDFLAGS="%{rpmldflags}" \
+	E2FSROOT=$RPM_BUILD_ROOT
 
 %install
 rm -rf $RPM_BUILD_ROOT

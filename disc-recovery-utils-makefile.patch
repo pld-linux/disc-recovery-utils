@@ -1,0 +1,27 @@
+--- disc-recovery-utils/Makefile.orig	2026-05-21 01:12:01.772815594 +0200
++++ disc-recovery-utils/Makefile	2026-05-21 01:12:01.776413463 +0200
+@@ -6,16 +6,21 @@
+ # The location of the e2fsprogs source root directory
+ E2FSROOT = e2fsroot
+ 
++CC ?= cc
++CFLAGS ?=
++CPPFLAGS ?=
++LDFLAGS ?=
++
+ all:	$(TARGETS)
+ 
+ copy_blocks:	copy_blocks.c version.h
+-	cc -o copy_blocks copy_blocks.c
++	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o copy_blocks copy_blocks.c
+ 
+ copy_listed_blocks:	copy_listed_blocks.c version.h
+-	cc -o copy_listed_blocks copy_listed_blocks.c
++	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o copy_listed_blocks copy_listed_blocks.c
+ 
+ e2fsfind:	e2fsfind.c version.h
+-	cc -o e2fsfind e2fsfind.c -I$(E2FSROOT)/lib -lext2fs -lcom_err
++	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) -o e2fsfind e2fsfind.c -I$(E2FSROOT)/lib -lext2fs -lcom_err
+ 
+ 
+ install:	$(TARGETS)

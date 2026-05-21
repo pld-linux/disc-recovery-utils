@@ -1,0 +1,323 @@
+--- disc-recovery-utils.orig/copy_blocks.c	2026-05-21 01:13:08.303732917 +0200
++++ disc-recovery-utils/copy_blocks.c	2026-05-21 01:14:35.936681691 +0200
+@@ -38,6 +38,7 @@
+ 
+ */
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+@@ -77,19 +78,19 @@
+     if ( ( in_fd = open (infile, O_RDONLY, 0) ) < 0 )
+     {
+ 	fprintf (stderr, "Error opening file: %s\t%s\n",
+-		 infile, sys_errlist[errno]);
++		 infile, strerror(errno));
+ 	exit (2);
+     }
+     if ( ( out_fp = fopen (outfile, "w") ) == NULL )
+     {
+ 	fprintf (stderr, "Error opening file: %s\t%s\n",
+-		 outfile, sys_errlist[errno]);
++		 outfile, strerror(errno));
+ 	exit (2);
+     }
+     if ( ( log_fp = fopen (logfile, "w") ) == NULL )
+     {
+ 	fprintf (stderr, "Error opening file: %s\t%s\n",
+-		 logfile, sys_errlist[errno]);
++		 logfile, strerror(errno));
+ 	exit (2);
+     }
+     for (bytes_read = 1; bytes_read != 0; ++curr_block)
+@@ -101,14 +102,14 @@
+ 	    if (errno != EIO)
+ 	    {
+ 		fprintf (stderr, "Error reading block %ld\t%s\n",
+-			 curr_block, sys_errlist[errno]);
++			 curr_block, strerror(errno));
+ 		exit (4);
+ 	    }
+ 	    fprintf (stderr, "Error reading block: %ld\n", curr_block);
+ 	    fprintf (log_fp, "%ld\n", curr_block);
+ 	    if (lseek (in_fd, BLOCK_SIZE * (curr_block + 1), SEEK_SET) == -1)
+ 	    {
+-		fprintf (stderr, "Error seeking\t%s\n", sys_errlist[errno]);
++		fprintf (stderr, "Error seeking\t%s\n", strerror(errno));
+ 		exit (3);
+ 	    }
+ 	    bzero (buffer, BLOCK_SIZE);
+@@ -117,12 +118,12 @@
+ 	if (bytes_read != BLOCK_SIZE)
+ 	{
+ 	    fprintf (stderr, "Error reading block %ld\t%s\n",
+-		     curr_block, sys_errlist[errno]);
++		     curr_block, strerror(errno));
+ 	    exit (4);
+ 	}
+ 	if (fwrite (buffer, 1, BLOCK_SIZE, out_fp) < BLOCK_SIZE)
+ 	{
+-	    fprintf (stderr, "Error writing\t%s\n", sys_errlist[errno]);
++	    fprintf (stderr, "Error writing\t%s\n", strerror(errno));
+ 	    exit (3);
+ 	}
+     }
+--- disc-recovery-utils.orig/copy_listed_blocks.c	2026-05-21 01:13:08.303781980 +0200
++++ disc-recovery-utils/copy_listed_blocks.c	2026-05-21 01:14:36.028399372 +0200
+@@ -37,6 +37,7 @@
+ 
+ */
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+@@ -82,27 +83,27 @@
+     if ( ( in_fd = open (infile, O_RDONLY, 0) ) < 0 )
+     {
+ 	fprintf (stderr, "Error opening file: %s\t%s\n",
+-		 infile, sys_errlist[errno]);
++		 infile, strerror(errno));
+ 	exit (2);
+     }
+ #ifndef DEBUG
+     if ( ( out_fd = open (outfile, O_RDWR, 0) ) < 0 )
+     {
+ 	fprintf (stderr, "Error opening file: %s\t%s\n",
+-		 outfile, sys_errlist[errno]);
++		 outfile, strerror(errno));
+ 	exit (2);
+     }
+ #endif
+     if ( ( log_in_fp = fopen (logfile_old, "r") ) == NULL )
+     {
+ 	fprintf (stderr, "Error opening file: %s\t%s\n",
+-		 logfile_old, sys_errlist[errno]);
++		 logfile_old, strerror(errno));
+ 	exit (2);
+     }
+     if ( ( log_out_fp = fopen (logfile_new, "w") ) == NULL )
+     {
+ 	fprintf (stderr, "Error opening file: %s\t%s\n",
+-		 logfile_new, sys_errlist[errno]);
++		 logfile_new, strerror(errno));
+ 	exit (2);
+     }
+     while (fgets (txt, STRING_LENGTH, log_in_fp) != NULL)
+@@ -116,7 +117,7 @@
+ 	curr_block = slong;
+ 	if (lseek (in_fd, BLOCK_SIZE * curr_block, SEEK_SET) == -1)
+ 	{
+-	    fprintf (stderr, "Error seeking input\t%s\n", sys_errlist[errno]);
++	    fprintf (stderr, "Error seeking input\t%s\n", strerror(errno));
+ 	    exit (4);
+ 	}
+ 	bytes_read = read (in_fd, buffer, BLOCK_SIZE);
+@@ -125,7 +126,7 @@
+ 	    if (errno != EIO)
+ 	    {
+ 		fprintf (stderr, "Error reading block %ld\t%s\n",
+-			 curr_block, sys_errlist[errno]);
++			 curr_block, strerror(errno));
+ 		exit (5);
+ 	    }
+ 	    fprintf (log_out_fp, "%ld\n", curr_block);
+@@ -135,20 +136,20 @@
+ 	if (bytes_read != BLOCK_SIZE)
+ 	{
+ 	    fprintf (stderr, "Error reading block %ld\t%s\n",
+-		     curr_block, sys_errlist[errno]);
++		     curr_block, strerror(errno));
+ 	    exit (5);
+ 	}
+ 	/*  Hey: it worked!  */
+ #ifndef DEBUG
+ 	if (lseek (out_fd, BLOCK_SIZE * curr_block, SEEK_SET) == -1)
+ 	{
+-	    fprintf (stderr, "Error seeking output\t%s\n", sys_errlist[errno]);
++	    fprintf (stderr, "Error seeking output\t%s\n", strerror(errno));
+ 	    exit (4);
+ 	}
+ 	if (write (out_fd, buffer, BLOCK_SIZE) != BLOCK_SIZE)
+ 	{
+ 	    fprintf (stderr, "Error writing block %ld\t%s\n",
+-		     curr_block, sys_errlist[errno]);
++		     curr_block, strerror(errno));
+ 	    exit (6);
+ 	}
+ #endif
+--- disc-recovery-utils.orig/e2fsfind.c	2026-05-21 01:13:08.303844802 +0200
++++ disc-recovery-utils/e2fsfind.c	2026-05-21 01:15:02.081130361 +0200
+@@ -43,11 +43,13 @@
+ #include <unistd.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <ctype.h>
+ #include <sys/time.h>
++#include <sys/stat.h>
+ #include <sys/times.h>
+ #include <errno.h>
+ #include <utime.h>
+-#include <linux/ext2_fs.h>
++#include <ext2fs/ext2_fs.h>
+ #include "ext2fs/ext2fs.h"
+ #include "version.h"
+ 
+@@ -89,13 +91,13 @@
+     time_t timeval;
+     /*TestFunc func;*/
+     flag (*func) (struct _restriction_type *entry, ext2_filsys fs,
+-		  struct ext2_inode *inode, ino_t ino);
++		  struct ext2_inode *inode, ext2_ino_t ino);
+     struct _restriction_type *prev;
+     struct _restriction_type *next;
+ } *restriction_type;
+ 
+ typedef flag (*TestFunc) (struct _restriction_type *entry, ext2_filsys fs,
+-			  struct ext2_inode *inode, ino_t ino);
++			  struct ext2_inode *inode, ext2_ino_t ino);
+ 
+ typedef struct
+ {
+@@ -132,10 +134,10 @@
+ 		 (ext2_filsys fs, char *device, char *line) );
+ STATIC_FUNCTION (void do_scan, (ext2_filsys fs, char *device, flag extract) );
+ STATIC_FUNCTION (flag check_inode, (ext2_filsys fs, struct ext2_inode *inode,
+-				    ino_t ino) );
++				    ext2_ino_t ino) );
+ STATIC_FUNCTION (void show_restrictions, (restriction_type list) );
+ STATIC_FUNCTION (void copy_inode,
+-		 (ext2_filsys fs, struct ext2_inode *inode, ino_t ino) );
++		 (ext2_filsys fs, struct ext2_inode *inode, ext2_ino_t ino) );
+ STATIC_FUNCTION (int copy_func,
+ 		 (ext2_filsys fs, blk_t *blocknum, int blockcount,
+ 		  void *info) );
+@@ -151,22 +153,22 @@
+ STATIC_FUNCTION (void show_help, () );
+ STATIC_FUNCTION (flag test_minsize,
+ 		 (struct _restriction_type *entry, ext2_filsys fs,
+-		  struct ext2_inode *inode, ino_t ino) );
++		  struct ext2_inode *inode, ext2_ino_t ino) );
+ STATIC_FUNCTION (flag test_maxsize,
+ 		 (struct _restriction_type *entry, ext2_filsys fs,
+-		  struct ext2_inode *inode, ino_t ino) );
++		  struct ext2_inode *inode, ext2_ino_t ino) );
+ STATIC_FUNCTION (flag test_startstring,
+ 		 (struct _restriction_type *entry, ext2_filsys fs,
+-		  struct ext2_inode *inode, ino_t ino) );
++		  struct ext2_inode *inode, ext2_ino_t ino) );
+ STATIC_FUNCTION (flag test_substring,
+ 		 (struct _restriction_type *entry, ext2_filsys fs,
+-		  struct ext2_inode *inode, ino_t ino) );
++		  struct ext2_inode *inode, ext2_ino_t ino) );
+ STATIC_FUNCTION (flag test_minage,
+ 		 (struct _restriction_type *entry, ext2_filsys fs,
+-		  struct ext2_inode *inode, ino_t ino) );
++		  struct ext2_inode *inode, ext2_ino_t ino) );
+ STATIC_FUNCTION (flag test_maxage,
+ 		 (struct _restriction_type *entry, ext2_filsys fs,
+-		  struct ext2_inode *inode, ino_t ino) );
++		  struct ext2_inode *inode, ext2_ino_t ino) );
+ 
+ 
+ void main (int argc, char **argv)
+@@ -242,7 +244,7 @@
+ 	    if ( ( logfile_fp = fopen (p1, "w") ) == NULL )
+ 	    {
+ 		fprintf (stderr, "Error opening file: \"%s\"\t%s\n",
+-			 p1, sys_errlist[errno]);
++			 p1, strerror(errno));
+ 		return;
+ 	    }
+ 	}
+@@ -318,7 +320,7 @@
+ {
+     int retval;
+     unsigned long num_found = 0;
+-    ino_t ino;
++    ext2_ino_t ino;
+     ext2_inode_scan scan;
+     struct ext2_inode inode;
+     struct timezone tz;
+@@ -346,7 +348,7 @@
+     else fprintf (stderr, "%lu inodes match specifications\n", num_found);
+ }   /*  End Function do_scan  */
+ 
+-static flag check_inode (ext2_filsys fs, struct ext2_inode *inode, ino_t ino)
++static flag check_inode (ext2_filsys fs, struct ext2_inode *inode, ext2_ino_t ino)
+ /*  [SUMMARY] Check if an inode passes the tests.
+     <fs> The ext2 filesystem handle.
+     <inode> The inode.
+@@ -397,7 +399,7 @@
+     fprintf (stderr, "\n");
+ }   /*  End Function show_restrictions  */
+ 
+-static void copy_inode (ext2_filsys fs, struct ext2_inode *inode, ino_t ino)
++static void copy_inode (ext2_filsys fs, struct ext2_inode *inode, ext2_ino_t ino)
+ /*  [SUMMARY] Copy an inode to a file.
+     <fs> The ext2 filesystem handle.
+     <inode> The inode.
+@@ -412,7 +414,7 @@
+     if ( ( copy_info.fp = fopen (filename, "w") ) == NULL )
+     {
+ 	fprintf (stderr, "Error opening file: \"%s\"\t%s\n",
+-		 filename, sys_errlist[errno]);
++		 filename, strerror(errno));
+ 	return;
+     }
+     copy_info.bytes_left = inode->i_size;
+@@ -600,7 +602,7 @@
+ /*  Test functions follow  */
+ 
+ static flag test_minsize (struct _restriction_type *entry, ext2_filsys fs,
+-			  struct ext2_inode *inode, ino_t ino)
++			  struct ext2_inode *inode, ext2_ino_t ino)
+ /*  [SUMMARY] Test if inode passes a specific test.
+     <entry> The test parameters.
+     <fs> The ext2 filesystem handle.
+@@ -614,7 +616,7 @@
+ }   /*  End Function test_minsize  */
+ 
+ static flag test_maxsize (struct _restriction_type *entry, ext2_filsys fs,
+-			  struct ext2_inode *inode, ino_t ino)
++			  struct ext2_inode *inode, ext2_ino_t ino)
+ /*  [SUMMARY] Test if inode passes a specific test.
+     <entry> The test parameters.
+     <fs> The ext2 filesystem handle.
+@@ -628,7 +630,7 @@
+ }   /*  End Function test_maxsize  */
+ 
+ static flag test_startstring (struct _restriction_type *entry, ext2_filsys fs,
+-			      struct ext2_inode *inode, ino_t ino)
++			      struct ext2_inode *inode, ext2_ino_t ino)
+ /*  [SUMMARY] Test if inode passes a specific test.
+     <entry> The test parameters.
+     <fs> The ext2 filesystem handle.
+@@ -648,7 +650,7 @@
+ }   /*  End Function test_startstring  */
+ 
+ static flag test_substring (struct _restriction_type *entry, ext2_filsys fs,
+-			    struct ext2_inode *inode, ino_t ino)
++			    struct ext2_inode *inode, ext2_ino_t ino)
+ /*  [SUMMARY] Test if inode passes a specific test.
+     <entry> The test parameters.
+     <fs> The ext2 filesystem handle.
+@@ -668,7 +670,7 @@
+ }   /*  End Function test_substring  */
+ 
+ static flag test_minage (struct _restriction_type *entry, ext2_filsys fs,
+-			 struct ext2_inode *inode, ino_t ino)
++			 struct ext2_inode *inode, ext2_ino_t ino)
+ /*  [SUMMARY] Test if inode passes a specific test.
+     <entry> The test parameters.
+     <fs> The ext2 filesystem handle.
+@@ -683,7 +685,7 @@
+ }   /*  End Function test_minage  */
+ 
+ static flag test_maxage (struct _restriction_type *entry, ext2_filsys fs,
+-			 struct ext2_inode *inode, ino_t ino)
++			 struct ext2_inode *inode, ext2_ino_t ino)
+ /*  [SUMMARY] Test if inode passes a specific test.
+     <entry> The test parameters.
+     <fs> The ext2 filesystem handle.
